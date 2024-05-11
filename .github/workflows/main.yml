@@ -23,7 +23,7 @@ jobs:
     - name: Build with Maven
       run: mvn clean install -DskipTests
 
-    - name: Log in to Amazon ECR
-      uses: aws-actions/amazon-ecr-login@v1
-      with:
-        aws-region: us-east-2
+    - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-2
