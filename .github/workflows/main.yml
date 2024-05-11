@@ -23,7 +23,8 @@ jobs:
     - name: Build with Maven
       run: mvn clean install -DskipTests
 
-    - name: Configure AWS credentials
+    - name: Login to Amazon ECR
+      id: ecr-login
       uses: aws-actions/amazon-ecr-login@v1
       env:
         AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -34,7 +35,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
         ECR_REPOSITORY: iece-core-api-repository
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
