@@ -56,3 +56,5 @@ jobs:
         service: iece-core-api-service
         cluster: iece-core-api-cluster
         task-definition: ${{ steps.task-def.outputs.task-definition }}
+      env:
+        AWS_REGION: ${{ secrets.AWS_REGION }}
