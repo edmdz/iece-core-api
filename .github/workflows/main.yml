@@ -1,3 +1,9 @@
+name: Build, Push and Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main  # Asegúrate de ajustar esto a la rama que usas para deploy
 jobs:
   build-and-deploy:
     name: Build and Deploy to AWS ECS
