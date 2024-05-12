@@ -26,6 +26,7 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Login to Amazon ECR
+      id: ecr-login
       uses: aws-actions/amazon-ecr-login@v1
     
     - name: Build, tag, and push Docker image to Amazon ECR
