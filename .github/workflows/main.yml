@@ -1,15 +1,11 @@
-name: Build, Push and Deploy to ECS
-
-on:
-  push:
-    branches:
-      - main  # Asegúrate de ajustar esto a la rama que usas para deploy
-
 jobs:
   build-and-deploy:
     name: Build and Deploy to AWS ECS
     runs-on: ubuntu-latest
-    
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -24,23 +20,14 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Login to Amazon ECR
-      id: ecr-login
       uses: aws-actions/amazon-ecr-login@v1
-      env:
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     
     - name: Build, tag, and push Docker image to Amazon ECR
       id: build-and-push
-      env:
-        ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-        ECR_REPOSITORY: iece-core-api-repository
-        IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        docker build -t ${{ steps.ecr-login.outputs.registry }}/iece-core-api-repository:${{ github.sha }} .
+        docker push ${{ steps.ecr-login.outputs.registry }}/iece-core-api-repository:${{ github.sha }}
+        echo "::set-output name=image::${{ steps.ecr-login.outputs.registry }}/iece-core-api-repository:${{ github.sha }}"
 
     - name: Fill in the new image ID in the ECS task definition
       id: task-def
@@ -56,5 +43,3 @@ jobs:
         service: iece-core-api-service
         cluster: iece-core-api-cluster
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-      env:
-        AWS_REGION: ${{ secrets.AWS_REGION }}
