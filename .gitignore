@@ -28,3 +28,6 @@ replay_pid*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/application*.yml
 !**/src/main/**/application*.properties
+/src/main/resources/envs/dev/*
+/src/main/resources/envs/prod/*
+/src/main/resources/envs/qa/*
