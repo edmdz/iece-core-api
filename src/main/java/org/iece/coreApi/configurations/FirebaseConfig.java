@@ -1,5 +1,7 @@
 package org.iece.coreApi.configurations;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
@@ -11,19 +13,28 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.cloud.StorageClient;
+
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @Component
 public class FirebaseConfig {
 
-    FirebaseAuth firebaseAuth;
-    Bucket storage;
+    @Value("${aws.region}")
+    private String region;
 
-    public FirebaseConfig() throws Exception {
-        String parameterName = "/IeceSystem/dev/FirebaseConfig"; // Nombre del parámetro en AWS Parameter Store
-        String region = "us-east-2"; // Región donde se almacena el parámetro
+    @Value("${aws.parameter.name}")
+    private String parameterName;
 
+    @Value("${firebase.bucket.name}")
+    private String bucketName;
+
+    private FirebaseAuth firebaseAuth;
+    private Bucket storage;
+
+    @PostConstruct
+    public void init() throws Exception {
         // Crea el cliente de AWS Systems Manager
         AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.standard()
                                                 .withRegion(region)
@@ -38,10 +49,15 @@ public class FirebaseConfig {
         String parameterJson = getParameterResult.getParameter().getValue();
         InputStream credentialsStream = new ByteArrayInputStream(parameterJson.getBytes());
         GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream);
-        FirebaseOptions configOptions = FirebaseOptions.builder().setCredentials(credentials).build();
+        
+        // Configura las opciones de Firebase con las credenciales obtenidas
+        FirebaseOptions configOptions = FirebaseOptions.builder()
+                .setCredentials(credentials)
+                .build();
+
         FirebaseApp fireBaseSjpeApp = FirebaseApp.initializeApp(configOptions);
         firebaseAuth = FirebaseAuth.getInstance(fireBaseSjpeApp);
-        storage = StorageClient.getInstance(fireBaseSjpeApp).bucket("deviecesystem.appspot.com");
+        storage = StorageClient.getInstance(fireBaseSjpeApp).bucket(bucketName);
     }
 
     public FirebaseAuth getFirebaseAuth() {
