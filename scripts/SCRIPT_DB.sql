@@ -30,6 +30,20 @@ CREATE TABLE catalogs.city (
     state_id INT REFERENCES catalogs.state(state_id)
 ) INHERITS (administration.control_table);
 
+CREATE TABLE administration.file_type (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+) INHERITS(administration.control_table);
+
+CREATE TABLE administration.file (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(50) NOT NULL,
+    storage_path TEXT NOT NULL,
+    file_type_id INT NOT NULL,
+    FOREIGN KEY (file_type_id) REFERENCES administration.file_type(id)
+) INHERITS (administration.control_table);
+
 -- Tabla de ubicaciones en el esquema 'administration'
 CREATE TABLE administration.location (
     location_id SERIAL PRIMARY KEY,
@@ -85,10 +99,10 @@ CREATE TABLE administration.person (
 ) INHERITS (administration.control_table);
 
 CREATE TABLE administration.user (
-    user_id UUID PRIMARY KEY,
+    user_id VARCHAR PRIMARY KEY,
     user_name VARCHAR,
     person_id INT REFERENCES administration.person(person_id),
-    profile_picture_url VARCHAR
+    pp_file_id INT REFERENCES administration.file(id)
 ) INHERITS (administration.control_table);
 
 CREATE TABLE administration.group_member (
@@ -114,7 +128,7 @@ CREATE TABLE security.role (
 
 CREATE TABLE security.user_role (
     user_role_id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES administration.user(user_id),
+    user_id VARCHAR REFERENCES administration.user(user_id),
     role_id INT REFERENCES security.role(role_id),
     assignment_date DATE
 ) INHERITS (administration.control_table);

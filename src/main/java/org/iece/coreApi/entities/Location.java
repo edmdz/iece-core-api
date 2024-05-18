@@ -10,20 +10,20 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id")
-    private Integer id;
+    private Integer locationId;
 
     @Column(name = "address", nullable = false)
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "state_id", nullable = false)
     private State state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
@@ -36,11 +36,11 @@ public class Location {
     // Getters and Setters
 
     public Integer getId() {
-        return id;
+        return locationId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.locationId = id;
     }
 
     public String getAddress() {

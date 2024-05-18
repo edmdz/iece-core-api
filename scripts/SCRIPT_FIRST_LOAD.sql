@@ -2580,3 +2580,5 @@ INSERT INTO hierarchy.group_type (group_type_id, name) VALUES
 (3, 'Lista'),
 (4, 'Mesa directiva'),
 (5, 'Comision');
+
+INSERT INTO ADMINISTRATION.FILE_TYPE(NAME) VALUES('Foto de perfil de Usuario');

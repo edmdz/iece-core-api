@@ -10,7 +10,7 @@ public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "state_id")
-    private Integer id;
+    private Integer stateId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -24,11 +24,11 @@ public class State {
 
     // Getters and Setters
     public Integer getId() {
-        return id;
+        return stateId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.stateId = id;
     }
 
     public String getName() {

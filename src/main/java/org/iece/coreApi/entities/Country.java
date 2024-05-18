@@ -11,7 +11,7 @@ public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "country_id")
-    private Integer id;
+    private Integer countryId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -20,11 +20,11 @@ public class Country {
     private Set<State> states;
 
     public Integer getId() {
-        return id;
+        return countryId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.countryId = id;
     }
 
     public String getName() {

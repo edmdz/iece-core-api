@@ -9,7 +9,7 @@ public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "district_id")
-    private Integer id;
+    private Integer districtId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -19,11 +19,11 @@ public class District {
     private Location location;
 
     public Integer getId() {
-        return id;
+        return districtId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.districtId = id;
     }
 
     public String getName() {
